@@ -1,0 +1,39 @@
+
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  // A URL do banco agora é lida da variável de ambiente DATABASE_URL
+  url      = env("DATABASE_URL")
+}
+
+model Patient {
+  id            Int           @id @default(autoincrement())
+  email         String        @unique
+  name          String
+  phone         String?
+  appointments  Appointment[]
+}
+
+model Doctor {
+  id            Int           @id @default(autoincrement())
+  email         String        @unique
+  name          String
+  specialty     String
+  appointments  Appointment[]
+}
+
+model Appointment {
+  id          Int       @id @default(autoincrement())
+  date        DateTime
+  description String?
+  patientId   Int
+  patient     Patient   @relation(fields: [patientId], references: [id])
+  doctorId    Int
+  doctor      Doctor    @relation(fields: [doctorId], references: [id])
+}
